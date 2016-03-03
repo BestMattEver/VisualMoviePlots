@@ -32,7 +32,7 @@ $("#go").on("click", function(){
   $.ajax({
     dataType: 'json',
     url: 'https://api.popkey.co/v2/media/search?q=' + movieInput ,
-    method: 'GET',
+    // method: 'GET',
     beforeSend: function (xhr) {
     var base64Credentials = "ZGVtbzplYTdiNjZmYjVlNjZjNjJkNmNmYTQ5ZmJlMGYyN2UwMDJjMjUxNGVlZDljNzVlYTlmNjVlOWQ3NTk4Y2I5YTkw";
     xhr.setRequestHeader('Authorization', 'Basic ' + base64Credentials);
@@ -45,17 +45,15 @@ $("#go").on("click", function(){
     $("#titleSlide").attr('src', ajaxData[0].source.url);
     $("#titleCaption").text(movieInput);
 
-    console.log(orderedPlot);
+    //console.log(orderedPlot);
 
 
     for(var k=0 ;k < 10;k++)//thid should get gifs and add them to the carosel.
     {
-
-
               $.ajax({
                 dataType: 'json',
                 url: 'https://api.popkey.co/v2/media/search?q=' + orderedPlot[k] ,
-                method: 'GET',
+                // method: 'GET',
                 beforeSend: function (xhr) {
                 var base64Credentials =   "ZGVtbzplYTdiNjZmYjVlNjZjNjJkNmNmYTQ5ZmJlMGYyN2UwMDJjMjUxNGVlZDljNzVlYTlmNjVlOWQ3NTk4 Y2I5YTkw";
                 xhr.setRequestHeader('Authorization', 'Basic ' + base64Credentials);
@@ -64,15 +62,19 @@ $("#go").on("click", function(){
             }).done(function(data2){
                 ajaxData2 = data2;
 
+                console.log(orderedPlot);
+
+                $(".carosel-inner").html("");
+
                 if(ajaxData2[0] != undefined)
                 {
                   gifArray.push(ajaxData2[0].source.url);
                   console.log("gifArray is: " + gifArray[gifArray.length-1]);//these are also gifs?!
                   //console.log(ajaxData2[0].source.url);//this is a url for a gif.
 
-                  $(".carousel-inner").append("<div class='item'><img src= '" + gifArray[k] + "' alt='" + gifArray[k] + "'><div class='carousel-caption'>" + orderedPlot[k] + "</div></div>");
+                  $(".carousel-inner").append("<div class='item'><img src= '" + ajaxData2[0].source.url + "' alt='...'><div class='carousel-caption'>" + orderedPlot[k] + "</div></div>");
 
-                  return ajaxData2[0].source.url;
+                  //return ajaxData2[0].source.url;
                 }//end if
 
               });//end ajax call for ordered array loop
