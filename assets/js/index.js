@@ -1,10 +1,14 @@
+$(function() {
+
+'use strict';
 
 var ajaxData;
+var ajaxData2;
 var filmPlot;
 var movieInput;
-var orderedPlot;
+var orderedPlot =[];
 var subStringArray;
-//var gifArray;
+var gifArray =[];
 var plotArray;
 //var temp;
 
@@ -12,13 +16,14 @@ $("#go").on("click", function(){
 
   $("CARO").removeClass("off");
   movieInput = $("#movieInput").val();
-  console.log("pass: " + movieInput);
+  // console.log("pass: " + movieInput);
 
   $.getJSON("http://www.omdbapi.com/?t=" + movieInput).done( function(movieData){
 
     filmPlot = movieData.Plot;
     console.log(filmPlot);
     $("#plotContainer").text(filmPlot);
+
     parsePlot(filmPlot);
 
   });//end json call to omdb
@@ -36,52 +41,76 @@ $("#go").on("click", function(){
 }).done(function(data1){
     ajaxData = data1;
 
-    var gifArray = getGifs();
-
-    console.log(orderedPlot);
-
     //sets up the title slide
     $("#titleSlide").attr('src', ajaxData[0].source.url);
     $("#titleCaption").text(movieInput);
 
-    for(var k=0 ;k < 10;k++)
+    console.log(orderedPlot);
+
+
+    for(var k=0 ;k < 10;k++)//thid should get gifs and add them to the carosel.
     {
-        $(".carousel-inner").append("<div class='item'><img src='" + gifArray[k] + "'><div class='carousel-caption'>" + orderedPlot[k] + "</div></div>");
-        // gifArray[k]
+
+
+              $.ajax({
+                dataType: 'json',
+                url: 'https://api.popkey.co/v2/media/search?q=' + orderedPlot[k] ,
+                method: 'GET',
+                beforeSend: function (xhr) {
+                var base64Credentials =   "ZGVtbzplYTdiNjZmYjVlNjZjNjJkNmNmYTQ5ZmJlMGYyN2UwMDJjMjUxNGVlZDljNzVlYTlmNjVlOWQ3NTk4 Y2I5YTkw";
+                xhr.setRequestHeader('Authorization', 'Basic ' + base64Credentials);
+              }
+
+            }).done(function(data2){
+                ajaxData2 = data2;
+
+                if(ajaxData2[0] != undefined)
+                {
+                  gifArray.push(ajaxData2[0].source.url);
+                  console.log("gifArray is: " + gifArray[gifArray.length-1]);//these are also gifs?!
+                  //console.log(ajaxData2[0].source.url);//this is a url for a gif.
+
+                  $(".carousel-inner").append("<div class='item'><img src= '" + gifArray[k] + "' alt='" + gifArray[k] + "'><div class='carousel-caption'>" + orderedPlot[k] + "</div></div>");
+
+                  return ajaxData2[0].source.url;
+                }//end if
+
+              });//end ajax call for ordered array loop
+
+        //console.log(getGifs(orderedPlot[k]));
+
     }//end append for loop.
 
-
-    //console.log(ajaxData);
-
-  });//end ajax call for initial Moviestuff
+});//end ajax call for initial Moviestuff
 
 
-function getGifs()
+function getGifs(word)
 {
   var myarray;
-  for(var i = 0;i < 10;i++)//gets 10 images, and sets up the strings for use
-  {
-        $.ajax({
-          dataType: 'json',
-          url: 'https://api.popkey.co/v2/media/search?q=' + orderedPlot[i] ,
-          method: 'GET',
-          beforeSend: function (xhr) {
-          var base64Credentials =   "ZGVtbzplYTdiNjZmYjVlNjZjNjJkNmNmYTQ5ZmJlMGYyN2UwMDJjMjUxNGVlZDljNzVlYTlmNjVlOWQ3NTk4 Y2I5YTkw";
-          xhr.setRequestHeader('Authorization', 'Basic ' + base64Credentials);
-        }
-
-      }).done(function(data2){
-
-          console.log(data2[0].source.url);
-          // myarray.push(temp);
-          
-           //pushes the gif url into an array.
-        });//end ajax call for ordered array loop
-    }//end the gif for loop. gifs captured.
-    return myArray;
+      //
+      //   $.ajax({
+      //     dataType: 'json',
+      //     url: 'https://api.popkey.co/v2/media/search?q=' + word ,
+      //     method: 'GET',
+      //     beforeSend: function (xhr) {
+      //     var base64Credentials =   "ZGVtbzplYTdiNjZmYjVlNjZjNjJkNmNmYTQ5ZmJlMGYyN2UwMDJjMjUxNGVlZDljNzVlYTlmNjVlOWQ3NTk4 Y2I5YTkw";
+      //     xhr.setRequestHeader('Authorization', 'Basic ' + base64Credentials);
+      //   }
+      //
+      // }).done(function(data2){
+      //     ajaxData2 = data2;
+      //
+      //     if(ajaxData2[0] != undefined)
+      //     {
+      //       gifArray.push(ajaxData2[0].source.url);
+      //       console.log("gifArray is: " + gifArray[gifArray.length-1]);//these are also gifs?!
+      //       //console.log(ajaxData2[0].source.url);//this is a url for a gif.
+      //       return ajaxData2[0].source.url;
+      //     }
+      //
+      //
+      //   });//end ajax call for ordered array loop
 }//end getgifs
-
-
 
 function parsePlot(plot)
 {
@@ -99,5 +128,7 @@ function parsePlot(plot)
 });//end go click
 
 $('.carousel').carousel({
-  interval: 1500
+  interval: 3000
 })
+
+});//end top function/file
