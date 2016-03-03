@@ -4,6 +4,10 @@
   font-size: 3em;
   text-align: center;
 }
+#keywordContainer{
+  font-size: 3em;
+  color: #999;
+}
 .off{
   display: none;
 }

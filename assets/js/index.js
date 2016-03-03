@@ -50,6 +50,7 @@ $("#go").on("click", function(){
 
     for(var k=0 ;k < 10;k++)//thid should get gifs and add them to the carosel.
     {
+      console.log(orderedPlot[k]);
               $.ajax({
                 dataType: 'json',
                 url: 'https://api.popkey.co/v2/media/search?q=' + orderedPlot[k] ,
@@ -71,8 +72,9 @@ $("#go").on("click", function(){
                   gifArray.push(ajaxData2[0].source.url);
                   console.log("gifArray is: " + gifArray[gifArray.length-1]);//these are also gifs?!
                   //console.log(ajaxData2[0].source.url);//this is a url for a gif.
+                //  $("#keywordContainer").text(orderedPlot[k]);
 
-                  $(".carousel-inner").append("<div class='item'><img src= '" + ajaxData2[0].source.url + "' alt='...'><div class='carousel-caption'>" + orderedPlot[k] + "</div></div>");
+                  $(".carousel-inner").append("<div class='item'><img src= '" + ajaxData2[0].source.url + "' alt='...'><div class='carousel-caption'></div></div>");
 
                   //return ajaxData2[0].source.url;
                 }//end if
