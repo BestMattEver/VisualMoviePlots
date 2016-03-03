@@ -1,0 +1,9 @@
+#jumboTop{
+  background: rgb(140, 209, 197);
+  color: rgb(86, 105, 171);
+  font-size: 3em;
+  text-align: center;
+}
+.off{
+  display: none;
+}
